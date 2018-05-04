@@ -1,14 +1,17 @@
 package paket;
 
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
+
+import weka.core.Instances;
+
+//import javax.swing.JTextField;
+//import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
@@ -23,6 +26,10 @@ import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextArea in1;
 	private JTextArea in2;
@@ -36,7 +43,8 @@ public class GUI extends JFrame {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 	private JLabel labelExport;
 	
-	boolean check = false;
+	boolean check1 = false;
+	boolean check2 = false;
 	private JScrollPane scrollPane;
 
 	/**
@@ -112,26 +120,50 @@ public class GUI extends JFrame {
 		JButton btnProvjeri = new JButton("Provjeri");
 		btnProvjeri.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				String data2string = null;
+				String data1string = null;
 				out.setText("");
 				if(file1 != null) {
 					out.append("Prvi: " + file1.getName() + "\r\n");
-					check = true;
+					//check = true;
+					
 					//Unos.unosSeta(file1.getPath());
-					out.append("Prvi dataset: " + Unos.unosSeta(file1.getPath()).toString() + "\r\n");
+					//out.append("Prvi dataset: " + Unos.unosSeta(file1.getPath()).toString() + "\r\n");
+					Instances data1 = Unos.unosSeta(file1.getPath());
+					data1string = data1.toString();
+					//check1 = true;
+					
+					//out.append(data1string);
 				}
 				else {
 					out.append("Prvi: nije odabran\r\n");
+					
 				}
 				
 				if(file2 != null) {
 					out.append("Drugi: " + file2.getName() + "\r\n");
-					check = true;
-					//Unos.unosSeta(file2.getPath());
-					out.append("Drugi dataset: " + Unos.unosSeta(file2.getPath()).toString() + "\r\n");
 					
+					//Unos.unosSeta(file2.getPath());
+					//out.append("Drugi dataset: " + Unos.unosSeta(file2.getPath()).toString() + "\r\n");
+					Instances data2 = Unos.unosSeta(file1.getPath());
+					data2string = data2.toString();
+					//out.append(data2string);
+					//check2 = true;
 				}
 				else {
 					out.append("Drugi: nije odabran\r\n");
+					
+				}
+				
+				if(file1 != null && file2 != null) {
+					
+					//out.append(obrada.obradi(data1string, data2string));
+					System.out.println(obrada.obradi(data1string, data2string));
+					
+				}
+				else {
+					out.append("nisu unesene oba dve datoteke");
 				}
 			}
 		});
