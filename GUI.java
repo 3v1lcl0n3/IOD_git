@@ -5,8 +5,10 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
@@ -33,6 +35,9 @@ public class GUI extends JFrame {
 	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 	private JLabel labelExport;
+	
+	boolean check = false;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -110,6 +115,9 @@ public class GUI extends JFrame {
 				out.setText("");
 				if(file1 != null) {
 					out.append("Prvi: " + file1.getName() + "\r\n");
+					check = true;
+					//Unos.unosSeta(file1.getPath());
+					out.append("Prvi dataset: " + Unos.unosSeta(file1.getPath()).toString() + "\r\n");
 				}
 				else {
 					out.append("Prvi: nije odabran\r\n");
@@ -117,6 +125,10 @@ public class GUI extends JFrame {
 				
 				if(file2 != null) {
 					out.append("Drugi: " + file2.getName() + "\r\n");
+					check = true;
+					//Unos.unosSeta(file2.getPath());
+					out.append("Drugi dataset: " + Unos.unosSeta(file2.getPath()).toString() + "\r\n");
+					
 				}
 				else {
 					out.append("Drugi: nije odabran\r\n");
@@ -129,7 +141,7 @@ public class GUI extends JFrame {
 		out = new JTextArea();
 		out.setEditable(false);
 		out.setBounds(40, 170, 369, 285);
-		contentPane.add(out);
+		//contentPane.add(out);
 		
 		in2 = new JTextArea();
 		in2.setEditable(false);
@@ -177,5 +189,9 @@ public class GUI extends JFrame {
 		labelExport = new JLabel("");
 		labelExport.setBounds(40, 466, 270, 20);
 		contentPane.add(labelExport);
+		
+		scrollPane = new JScrollPane(out);
+		scrollPane.setBounds(40, 170, 369, 285);
+		contentPane.add(scrollPane);
 	}
 }
