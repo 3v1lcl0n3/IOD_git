@@ -1,14 +1,8 @@
-# IOD_git
-Interface oriented design
 
 ## Materijali:
 
-knjiga sa našom temom:
-https://doc.lagout.org/programmation/Pragmatic%20Programmers/Interface%20Oriented%20Design.pdf
+Librariji za skinut da app radi
+FileUtils: http://ftp.carnet.hr/misc/apache//commons/io/binaries/commons-io-2.6-bin.zip <br>
+Weka source: http://prdownloads.sourceforge.net/weka/weka-3-8-2.zip <br>
+Guave: http://search.maven.org/remotecontent?filepath=com/google/guava/guava/23.0/guava-23.0.jar <br>
 
-Program koji moramo koristit:
-https://argouml.en.softonic.com/
-
-## Zadatak:
-1. PDF dokumentacija od 10~ tak strana
-2. Prezentacija od cca 30 slajdova~ 
