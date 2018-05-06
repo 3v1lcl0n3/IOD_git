@@ -89,6 +89,8 @@ public class GUI extends JFrame {
 		btnPretrazi1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fc = new JFileChooser();
+				fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
+				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showOpenDialog(GUI.this);
 
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -107,6 +109,8 @@ public class GUI extends JFrame {
 		btnPretrazi2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fc = new JFileChooser();
+				fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
+				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showOpenDialog(GUI.this);
 
 	            if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -218,7 +222,7 @@ public class GUI extends JFrame {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						labelExport.setText("Greöka kod izvoza");
+						labelExport.setText("Gre≈°ka kod izvoza");
 					}
 				}
 				else {
