@@ -1,5 +1,7 @@
 package paket;
 
+import java.io.File;
+
 //import weka.*;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;;
@@ -9,12 +11,7 @@ public class Unos {
 	
 	static Instances data;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-		
-
-}
+	
 	
 	public static Instances unosSeta(String path) {
 		
@@ -34,6 +31,19 @@ public class Unos {
 		//System.out.print(data);
 		return data;
 		
+	}
+	
+	public static File unosFile(String path) {
+		File file = null;
+		try {
+			file = new File(path);
+		}
+		catch (Exception e){
+			System.out.println("file ne postoji");
+		}
+		
+		
+		return file;
 	}
 	
 }

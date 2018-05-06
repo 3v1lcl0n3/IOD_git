@@ -22,6 +22,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.awt.event.ActionEvent;
 
 public class GUI extends JFrame {
@@ -148,6 +152,7 @@ public class GUI extends JFrame {
 					//out.append("Drugi dataset: " + Unos.unosSeta(file2.getPath()).toString() + "\r\n");
 					Instances data2 = Unos.unosSeta(file1.getPath());
 					data2string = data2.toString();
+					
 					//out.append(data2string);
 					//check2 = true;
 				}
@@ -159,11 +164,17 @@ public class GUI extends JFrame {
 				if(file1 != null && file2 != null) {
 					
 					//out.append(obrada.obradi(data1string, data2string));
-					System.out.println(obrada.obradi(data1string, data2string));
+					//System.out.println(obrada.obradi(data1string, data2string));
+					Set<String> rezultat = obrada.obradi(file2, file1);
+					ArrayList<String> dictionary = new ArrayList<String>();
+					for (String eachString : rezultat)
+					{
+					    System.out.println(eachString);
+					}
 					
 				}
 				else {
-					out.append("nisu unesene oba dve datoteke");
+					out.append("nisu unesene obje datoteke");
 				}
 			}
 		});
