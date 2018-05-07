@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Sets;
 
 
@@ -48,7 +47,7 @@ public class obrada {
 		Set<String> intersection = Sets.intersection(jedan, dva); //intersection / hashSet2
 		Set<String> difference = Sets.difference(hashSet1, intersection);
 		
-		
+
 		
 		//hashSet2.removeAll(hashSet1);
 		//jedan.removeAll(dva);
@@ -68,7 +67,14 @@ public class obrada {
 			@SuppressWarnings("deprecation")
 			HashSet<String> f2 = new HashSet<String>(FileUtils.readLines(file2));
 			
+			HashSet<String> f3 = f2;
+			
 			f2.removeAll(f1);
+			//f1.removeAll(f3);
+			
+			//f2.addAll(f1);
+			//SetView<String> intersection = Sets.intersection(f1,f2);
+			
 			return f2;
 		}
 		catch (Exception e) {

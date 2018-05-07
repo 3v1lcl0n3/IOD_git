@@ -7,6 +7,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.FileUtils;
 
 import weka.core.Instances;
 
@@ -23,8 +26,6 @@ import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import java.awt.event.ActionEvent;
 
@@ -171,14 +172,27 @@ public class GUI extends JFrame {
 					//System.out.println(obrada.obradi(data1string, data2string));
 					Set<String> rezultat = obrada.obradi(file2, file1);
 					ArrayList<String> dictionary = new ArrayList<String>();
-					for (String eachString : rezultat)
-					{
-					    System.out.println(eachString);
+					//dictionary.sort();
+					//Collectons.sort(dictionary);
+					
+					try {
+						if(!FileUtils.contentEquals(file1, file2)) {
+							for (String eachString : rezultat)
+							{
+							    out.append(eachString);
+							    out.append("\n");
+							}
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+					
+				
 					
 				}
 				else {
-					out.append("nisu unesene obje datoteke");
+					out.append("nisu unesene obe datoteke");
 				}
 			}
 		});

@@ -37,6 +37,7 @@ public class Unos {
 		File file = null;
 		try {
 			file = new File(path);
+			
 		}
 		catch (Exception e){
 			System.out.println("file ne postoji");
