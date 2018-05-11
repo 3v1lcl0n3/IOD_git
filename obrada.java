@@ -1,9 +1,11 @@
 package paket;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -80,15 +82,94 @@ public class obrada {
 			//f2.addAll(f1);
 			//SetView<String> intersection = Sets.intersection(f1,f2);
 			
-			Set<String> rez = new HashSet<String>();
+//nalazi module koji nema vise u drugoj verziji
 			
+			Set<String> datprva = new HashSet<String>();
+			Set<String> datdruga = new HashSet<String>();
+			
+			List<String> moduli1 = new ArrayList<String>();
+			List<String> moduli2 = new ArrayList<String>();
+			
+			for (String s : f1) {
+				if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+					String[] parts = s.split("\\,");
+			    	moduli1.add(parts[0]);
+					
+				}
+			}
+			
+			for (String s : f2) {
+				if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+					String[] parts = s.split("\\,");
+			    	moduli2.add(parts[0]);
+					
+				}
+			}
+			
+			
+			Set<String> rez = new HashSet<String>();
+			//nalazi module koje su promjenjene u drugoj verziji dataseta
 			for (Iterator<String> iterator = f2.iterator(); iterator.hasNext();) {
 			    String s =  iterator.next();
-			    if (!s.contains("FP")){
+			    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") ){
 			    	iterator.remove();
 			    	rez.add(s+",FP");
 			    }   
+			    
+			    int i = 0;
+			    if(!s.contains(moduli1.get(i))){
+			    	rez.add(s);
+			    }
+			    
 			}
+			
+			for(int i = 0; i < moduli1.size();i++){
+				
+				for(int j = 0; j < moduli2.size();j++){
+					//System.out.println("usporedujem" + moduli1.get(i) + "sa" + moduli2.get(i));
+					if(moduli1.get(i) == moduli2.get(j)){
+						moduli1.remove(i);
+					}
+					
+				}
+				
+			}
+			
+			System.out.println("trebalo bi samo");
+			System.out.println(moduli1);
+			System.out.println("jedan element");
+			
+			/*
+			for (Iterator<String> iterator = f1.iterator(); iterator.hasNext();) {
+			    String s =  iterator.next();
+			    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+			    	String temp = iterator.toString();
+			    	iterator.remove();
+			    	String[] parts = temp.split("\\,");
+			    	moduli1.add(parts[0]);
+			    	
+			    }   
+			    
+			}
+			*/
+			/*for (Iterator<String> iterator = f2.iterator(); iterator.hasNext();) {
+			    String s =  iterator.next();
+			    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+			    	String temp = iterator.toString();
+			    	iterator.remove();
+			    	String[] parts = temp.split("\\,");
+			    	moduli2.add(parts[0]);
+			    	
+			    }   
+			    
+			}
+			*/
+			System.out.println(moduli1);
+			System.out.println("novi moduli");
+			System.out.println(moduli2);
+			
+			
+			
 			
 			for (String eachString : rez)
 			{
