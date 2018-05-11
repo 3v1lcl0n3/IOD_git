@@ -90,7 +90,7 @@ public class GUI extends JFrame {
 		btnPretrazi1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fc = new JFileChooser();
-				fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
+				fc.addChoosableFileFilter(new FileNameExtensionFilter("arff", "arff"));
 				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showOpenDialog(GUI.this);
 
@@ -110,7 +110,7 @@ public class GUI extends JFrame {
 		btnPretrazi2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				fc = new JFileChooser();
-				fc.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
+				fc.addChoosableFileFilter(new FileNameExtensionFilter("arff", "arff"));
 				fc.setAcceptAllFileFilterUsed(false);
 				int returnVal = fc.showOpenDialog(GUI.this);
 
@@ -139,8 +139,15 @@ public class GUI extends JFrame {
 					
 					//Unos.unosSeta(file1.getPath());
 					//out.append("Prvi dataset: " + Unos.unosSeta(file1.getPath()).toString() + "\r\n");
-					Instances data1 = Unos.unosSeta(file1.getPath());
-					data1string = data1.toString();
+					Instances data1;
+					try {
+						data1 = Unos.unosSeta(file1.getPath());
+						data1string = data1.toString();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 					//check1 = true;
 					
 					//out.append(data1string);
@@ -155,8 +162,15 @@ public class GUI extends JFrame {
 					
 					//Unos.unosSeta(file2.getPath());
 					//out.append("Drugi dataset: " + Unos.unosSeta(file2.getPath()).toString() + "\r\n");
-					Instances data2 = Unos.unosSeta(file1.getPath());
-					data2string = data2.toString();
+					Instances data2;
+					try {
+						data2 = Unos.unosSeta(file1.getPath());
+						data2string = data2.toString();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 					
 					//out.append(data2string);
 					//check2 = true;
@@ -170,11 +184,11 @@ public class GUI extends JFrame {
 					
 					//out.append(obrada.obradi(data1string, data2string));
 					//System.out.println(obrada.obradi(data1string, data2string));
-					Set<String> rezultat = obrada.obradi(file2, file1);
+					Set<String> rezultat = obrada.obradi(file1, file2);
 					ArrayList<String> dictionary = new ArrayList<String>();
 					//dictionary.sort();
 					//Collectons.sort(dictionary);
-					
+					/*
 					try {
 						if(!FileUtils.contentEquals(file1, file2)) {
 							for (String eachString : rezultat)
@@ -187,7 +201,7 @@ public class GUI extends JFrame {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-					
+					*/
 				
 					
 				}

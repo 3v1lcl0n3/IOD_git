@@ -3,6 +3,7 @@ package paket;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
@@ -70,10 +71,30 @@ public class obrada {
 			HashSet<String> f3 = f2;
 			
 			f2.removeAll(f1);
+			
+			//f1.removeAll(f2);
+			
+			
 			//f1.removeAll(f3);
 			
 			//f2.addAll(f1);
 			//SetView<String> intersection = Sets.intersection(f1,f2);
+			
+			Set<String> rez = new HashSet<String>();
+			
+			for (Iterator<String> iterator = f2.iterator(); iterator.hasNext();) {
+			    String s =  iterator.next();
+			    if (!s.contains("FP")){
+			    	iterator.remove();
+			    	rez.add(s+",FP");
+			    }   
+			}
+			
+			for (String eachString : rez)
+			{
+			    System.out.println(eachString);
+			    System.out.println("\n");
+			}
 			
 			return f2;
 		}

@@ -1,6 +1,10 @@
 package paket;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 //import weka.*;
 import weka.core.Instances;
@@ -13,8 +17,8 @@ public class Unos {
 
 	
 	
-	public static Instances unosSeta(String path) {
-		
+	public static Instances unosSeta(String path) throws IOException {
+		/*
 		try {
 			DataSource source = new DataSource(path);
 			data = source.getDataSet();
@@ -27,7 +31,22 @@ public class Unos {
 		data.setClassIndex(data.numAttributes() - 1);
 		
 		}
-	
+	*/
+		
+		BufferedReader reader = null;
+		
+		try {
+			reader = new BufferedReader(
+			new FileReader(path));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Instances data = new Instances(reader);
+		reader.close();
+		// setting class attribute
+		data.setClassIndex(data.numAttributes() - 1);
+		
 		//System.out.print(data);
 		return data;
 		
