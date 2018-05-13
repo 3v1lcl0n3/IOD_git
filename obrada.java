@@ -1,6 +1,7 @@
 package paket;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -60,17 +61,17 @@ public class obrada {
 	}
 	
 	
-	public static Set<String> obradi(File file1, File file2) {
+	@SuppressWarnings("deprecation")
+	public static String obradi(File file1, File file2) {
 		
 		try {
 			
-			@SuppressWarnings("deprecation")
 			HashSet<String> f1 = new HashSet<String>(FileUtils.readLines(file1));
 			
-			@SuppressWarnings("deprecation")
 			HashSet<String> f2 = new HashSet<String>(FileUtils.readLines(file2));
 			
-			
+			List<String> f1_s = FileUtils.readLines(file1);
+			List<String> f2_s = FileUtils.readLines(file2);
 			
 			//f1.removeAll(f2);
 			
@@ -87,13 +88,32 @@ public class obrada {
 			List<String> moduli1 = new ArrayList<String>();
 			List<String> moduli2 = new ArrayList<String>();
 			
+			PrintWriter writer = new PrintWriter("Usporedba.arff", "UTF-8");
+			writer.println("@RELATION Usporedba");
+			writer.println();
+			
+			
+			int nKlasifikatora=1, nModula1=0, nModula2=0, nJednakih=0, nRazlicitih=0, nFP=0, nNFP=0;
+			
+			for(int i=0; i<f1_s.size(); i++) {
+				String s = f1_s.get(i);
+				if(s.contains("@ATTRIBUTE") && !s.contains("module")) {
+					writer.println(s);
+					System.out.println("Dodan u izlaz: " + s);
+					nKlasifikatora++;
+				}
+			}
+			
 			for (String s : f1) {
 				if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") && !s.isEmpty()){
 					String[] parts = s.split("\\,");
 			    	moduli1.add(parts[0]);
 					System.out.println("Dodan u moduli1: " + parts[0]);
+					nModula1++;
 				}
 			}
+			writer.println("@ATTRIBUTE class {FP,NFP}");
+			writer.println();
 			System.out.println();
 			
 			for (String s : f2) {
@@ -101,6 +121,7 @@ public class obrada {
 					String[] parts = s.split("\\,");
 			    	moduli2.add(parts[0]);
 			    	System.out.println("Dodan u moduli2: " + parts[0]);
+			    	nModula2++;
 				}
 			}
 			
@@ -119,8 +140,13 @@ public class obrada {
 				
 				if(s.contains("java")){
 					jednaki_mod.add(s);
+					nJednakih++;
 				}
 			}
+			
+			
+			writer.println("@DATA");
+			writer.println();
 			
 			
 			Set<String> rez = new HashSet<String>();
@@ -128,15 +154,23 @@ public class obrada {
 			for (Iterator<String> iterator = f3.iterator(); iterator.hasNext();) {
 			    String s =  iterator.next();
 			    if(!s.contains("@RELATION") && !s.contains("@ATTRIBUTE")) {
+			    	String write;
 			    	if (!s.contains("FP")) {
 			    		iterator.remove();
-				    	rez.add(s+",FP");
+			    		write = s.substring(s.indexOf(',') + 1)+",FP";
+				    	rez.add(write);
+				    	writer.println(write);
+				    	nRazlicitih++;
+				    	
 			    	}
 			    	else {
-			    		rez.add(s);
+			    		write = s.substring(s.indexOf(',') + 1);
+			    		rez.add(write);
+				    	writer.println(write);
 			    	}
 			    }
 			}
+			
 			
 			//nalazi module koji nema vise u drugoj verziji
 			
@@ -167,9 +201,11 @@ public class obrada {
 			System.out.println("elementi koji se ne podudaraju:");
 			System.out.println(moduli3);
 			
+			//nRazlicitih = moduli1.size();
 			moduli1.removeAll(moduli2);
+			//nJednakih = nRazlicitih - moduli1.size();
+			//nRazlicitih = moduli1.size();
 			
-			System.out.println();
 			System.out.println("moduli1 nakon brisanja duplikata (trebalo bi ih biti dva):");
 			System.out.println(moduli1);
 			
@@ -177,7 +213,10 @@ public class obrada {
 				
 				for(int i = 0;i < moduli1.size();i++){
 					if(s.contains(moduli1.get(i)) && !s.contains("@ATTRIBUTE")){
-						rez.add(s+",REMOVED");
+						String write = s.substring(s.indexOf(',') + 1) + ",FP";
+						rez.add(write);
+				    	writer.println(write);
+				    	nFP++;
 					}
 				}
 			}
@@ -187,8 +226,13 @@ public class obrada {
 			
 			
 			for(int i = 0; i < jednaki_mod.size();i++){
-				rez.add(jednaki_mod.get(i)+", NFP");
+				String write = jednaki_mod.get(i).substring(jednaki_mod.get(i).indexOf(',') + 1)+",NFP";
+				rez.add(write);
+		    	writer.println(write);
+		    	nNFP++;
 			}
+			
+			writer.close();
 			
 			/*
 			for (Iterator<String> iterator = f1.iterator(); iterator.hasNext();) {
@@ -227,7 +271,19 @@ public class obrada {
 			    System.out.println(eachString);
 			}
 			
-			return f2;
+			String report = "Broj modula u prvom datasetu: " + nModula1 + "\n";
+			report += "Broj modula u drugom datasetu: " + nModula2 + "\n";
+			report += "Broj promjenjenih modula: " + nRazlicitih + "\n";
+			report += "Broj nepromijenjenih modula: " + jednaki_mod.size() + "\n";
+			report += "Broj modula koji su maknuti u novoj verziji: " + moduli1.size() + "\n\n";
+			int FP_cand = nRazlicitih + moduli1.size();
+			report += "Broj FP kandidata(promjenjeni + maknuti): " + FP_cand + "\n";
+			report += "Broj NFP kandidata(nepromjenjeni moduli): " + jednaki_mod.size() + "\n";
+			
+			
+			Analiza.analiza();
+			
+			return report;
 		}
 		catch (Exception e) {
 			System.out.println("a ne znam");
