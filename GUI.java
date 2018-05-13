@@ -184,7 +184,8 @@ public class GUI extends JFrame {
 					
 					//out.append(obrada.obradi(data1string, data2string));
 					//System.out.println(obrada.obradi(data1string, data2string));
-					Set<String> rezultat = obrada.obradi(file1, file2);
+					String rezultat = obrada.obradi(file1, file2);
+					out.append("\n" + rezultat);
 					ArrayList<String> dictionary = new ArrayList<String>();
 					//dictionary.sort();
 					//Collectons.sort(dictionary);
@@ -250,7 +251,7 @@ public class GUI extends JFrame {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						labelExport.setText("Gre≈°ka kod izvoza");
+						labelExport.setText("Greöka kod izvoza");
 					}
 				}
 				else {
