@@ -160,11 +160,8 @@ public class obrada {
 			    		write = s.substring(s.indexOf(',') + 1)+",FP";
 				    	rez.add(write);
 				    	writer.println(write);
-<<<<<<< HEAD
 				    	nRazlicitih++;
 				    	
-=======
->>>>>>> cb36c378e9bfa7b30bd9eaed03856eff413ad016
 			    	}
 			    	else {
 			    		write = s.substring(s.indexOf(',') + 1);
@@ -204,17 +201,10 @@ public class obrada {
 			System.out.println("elementi koji se ne podudaraju:");
 			System.out.println(moduli3);
 			
-<<<<<<< HEAD
 			//nRazlicitih = moduli1.size();
 			moduli1.removeAll(moduli2);
 			//nJednakih = nRazlicitih - moduli1.size();
 			//nRazlicitih = moduli1.size();
-=======
-			nRazlicitih = moduli1.size();
-			moduli1.removeAll(moduli2);
-			nJednakih = nRazlicitih - moduli1.size();
-			nRazlicitih = moduli1.size();
->>>>>>> cb36c378e9bfa7b30bd9eaed03856eff413ad016
 			
 			System.out.println("moduli1 nakon brisanja duplikata (trebalo bi ih biti dva):");
 			System.out.println(moduli1);
@@ -283,7 +273,6 @@ public class obrada {
 			
 			String report = "Broj modula u prvom datasetu: " + nModula1 + "\n";
 			report += "Broj modula u drugom datasetu: " + nModula2 + "\n";
-<<<<<<< HEAD
 			report += "Broj promjenjenih modula: " + nRazlicitih + "\n";
 			report += "Broj nepromijenjenih modula: " + jednaki_mod.size() + "\n";
 			report += "Broj modula koji su maknuti u novoj verziji: " + moduli1.size() + "\n\n";
@@ -293,14 +282,6 @@ public class obrada {
 			
 			
 			Analiza.analiza();
-=======
-			report += "Broj nepromijenjenih modula: " + nJednakih + "\n";
-			report += "Broj promijenjenih modula: " + nRazlicitih + "\n";
-			//report += "Broj novih modula: " + (nModula2 -(nJednakih)) + "\n";
-			
-			
-			
->>>>>>> cb36c378e9bfa7b30bd9eaed03856eff413ad016
 			
 			return report;
 		}
