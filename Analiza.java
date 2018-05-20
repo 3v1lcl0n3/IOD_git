@@ -8,6 +8,7 @@ import java.nio.file.DirectoryStream.Filter;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.StringToWordVector;
@@ -22,7 +23,6 @@ public class Analiza {
 		//build model
 	    NaiveBayes model=new NaiveBayes();
 	    model.buildClassifier(train);
-
 	    //use
 	    Evaluation eval_train = new Evaluation(test);
 	    eval_train.evaluateModel(model,test);
@@ -31,8 +31,16 @@ public class Analiza {
 		
 		//filter
         StringToWordVector Filter = new StringToWordVector();
-
-        Classifier naive = new NaiveBayes();
+        Classifier algoritam;
+        algoritam = new NaiveBayes();
+        if(GUI.odabraniAlgoritam == 0) {
+        	algoritam = new NaiveBayes();
+        	System.out.println("\nodabran NaiveBayes\n");
+        }
+        else if(GUI.odabraniAlgoritam == 1) {
+        	algoritam = new BayesNet();
+        	System.out.println("\nodabran BayesNet\n");
+        }
 
         //training data
         Instances train = null;
@@ -89,7 +97,7 @@ public class Analiza {
         
         double index = 0;
         try {
-			naive.buildClassifier(train);
+			algoritam.buildClassifier(train);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,7 +108,7 @@ public class Analiza {
             
 			try {
 				
-				index = naive.classifyInstance(test2.instance(i));
+				index = algoritam.classifyInstance(test2.instance(i));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -115,7 +123,4 @@ public class Analiza {
     }
 		
 		
-	}
-	
-
-
+}
