@@ -28,6 +28,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Set;
 import java.awt.event.ActionEvent;
+import javax.swing.JList;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class GUI extends JFrame {
 
@@ -51,6 +54,8 @@ public class GUI extends JFrame {
 	boolean check1 = false;
 	boolean check2 = false;
 	private JScrollPane scrollPane;
+	public static int odabraniAlgoritam;
+	JComboBox odabirAlgoritma;
 
 	/**
 	 * Launch the application.
@@ -126,6 +131,21 @@ public class GUI extends JFrame {
 		btnPretrazi2.setBounds(320, 99, 89, 23);
 		contentPane.add(btnPretrazi2);
 		
+		JComboBox odabirAlgoritma = new JComboBox();
+		odabirAlgoritma.setModel(new DefaultComboBoxModel(new String[] {"NaiveBayes", "BayesNet"}));
+		odabirAlgoritma.setMaximumRowCount(2);
+		odabirAlgoritma.setBounds(300, 133, 109, 23);
+		odabirAlgoritma.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				odabraniAlgoritam = odabirAlgoritma.getSelectedIndex();
+			}
+		});
+		contentPane.add(odabirAlgoritma);
+		
+		JLabel lblAlgoritam = new JLabel("Algoritam:");
+		lblAlgoritam.setBounds(231, 139, 59, 14);
+		contentPane.add(lblAlgoritam);
+		
 		JButton btnProvjeri = new JButton("Provjeri");
 		btnProvjeri.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -185,6 +205,7 @@ public class GUI extends JFrame {
 					//out.append(obrada.obradi(data1string, data2string));
 					//System.out.println(obrada.obradi(data1string, data2string));
 					String rezultat = obrada.obradi(file1, file2);
+					out.append("\nAlgoritam: " + odabirAlgoritma.getModel().getSelectedItem().toString() + "\n");
 					out.append("\n" + rezultat);
 					ArrayList<String> dictionary = new ArrayList<String>();
 					//dictionary.sort();
@@ -251,7 +272,7 @@ public class GUI extends JFrame {
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
-						labelExport.setText("Greöka kod izvoza");
+						labelExport.setText("Gre≈°ka kod izvoza");
 					}
 				}
 				else {
@@ -269,5 +290,8 @@ public class GUI extends JFrame {
 		scrollPane = new JScrollPane(out);
 		scrollPane.setBounds(40, 170, 369, 285);
 		contentPane.add(scrollPane);
+		
+		
+		
 	}
 }
