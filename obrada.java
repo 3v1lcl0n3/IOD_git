@@ -17,7 +17,31 @@ import com.google.common.collect.Sets;
 
 public class obrada {
 
-	
+	private static HashSet<String> removeBuggy(HashSet<String> set) {
+		List<String> toRemove = new ArrayList<String>();
+		for(String s: set) {
+			if(s.lastIndexOf(',') != -1 && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA")) {
+				String bugs = s.substring(s.lastIndexOf(',') + 1);
+				int bugova = 0;
+				try {
+					bugova = Integer.parseInt(bugs);
+				}
+				catch(NumberFormatException e) {
+					System.out.println("Greska kod nalazenja bug counta");
+				}
+				if(bugova > 0) {
+					toRemove.add(s);
+				}
+			}
+		}
+		for(String s: toRemove) {
+			if(set.remove(s)) {
+				System.out.println("Maknut " + s);
+			}
+		}
+		return set;
+		
+	}
 	
 	public static Set<String> obradi(String data1, String data2) {
 		
@@ -61,15 +85,24 @@ public class obrada {
 	}
 	
 	
-	@SuppressWarnings("deprecation")
 	public static String obradi(File file1, File file2) {
+		return obradi(file1, file2, 'n');
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static String obradi(File file1, File file2, char nacin) {
 		
+		HashSet<String> f1 = null;
+		HashSet<String> f2 = null;
 		try {
 			
-			HashSet<String> f1 = new HashSet<String>(FileUtils.readLines(file1));
+			f1 = new HashSet<String>(FileUtils.readLines(file1));
+			f2 = new HashSet<String>(FileUtils.readLines(file2));
 			
-			HashSet<String> f2 = new HashSet<String>(FileUtils.readLines(file2));
-			
+			if(nacin == 'm') {
+				f1 = removeBuggy(f1);
+				f2 = removeBuggy(f2);
+			}
 			List<String> f1_s = FileUtils.readLines(file1);
 			List<String> f2_s = FileUtils.readLines(file2);
 			
@@ -92,12 +125,15 @@ public class obrada {
 			writer.println("@RELATION Usporedba");
 			writer.println();
 			
-			
 			int nKlasifikatora=1, nModula1=0, nModula2=0, nJednakih=0, nRazlicitih=0, nFP=0, nNFP=0;
 			
 			for(int i=0; i<f1_s.size(); i++) {
 				String s = f1_s.get(i);
-				if(s.contains("@ATTRIBUTE") && !s.contains("module")) {
+				boolean provjera = true;
+				if(nacin == 'm') {
+					provjera = !s.contains("bug_cnt");
+				}
+				if(s.contains("@ATTRIBUTE") && provjera && !s.contains("module")) {
 					writer.println(s);
 					System.out.println("Dodan u izlaz: " + s);
 					nKlasifikatora++;
@@ -105,7 +141,7 @@ public class obrada {
 			}
 			
 			for (String s : f1) {
-				if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") && !s.isEmpty()){
+				if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE")&& !s.contains("@DATA") && !s.isEmpty()){
 					String[] parts = s.split("\\,");
 			    	moduli1.add(parts[0]);
 					System.out.println("Dodan u moduli1: " + parts[0]);
@@ -148,13 +184,22 @@ public class obrada {
 			writer.println("@DATA");
 			writer.println();
 			
+			List <String> tempmod2 = new ArrayList<String>();
+			tempmod2.addAll(moduli2);
+			List <String> tempmod1 = new ArrayList<String>();
+			tempmod1.addAll(moduli1);
+			tempmod2.removeAll(tempmod1);
+			System.out.println("Trebao bi bit jedan element:" + tempmod2);
 			
 			Set<String> rez = new HashSet<String>();
 			//nalazi module koje su promjenjene u drugoj verziji dataseta
 			for (Iterator<String> iterator = f3.iterator(); iterator.hasNext();) {
 			    String s =  iterator.next();
-			    if(!s.contains("@RELATION") && !s.contains("@ATTRIBUTE")) {
+			    if(!s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains(tempmod2.get(0))&& !s.contains(tempmod2.get(1))) {
 			    	String write;
+			    	if(nacin == 'm') {
+			    		s = s.substring(0, s.lastIndexOf(','));
+			    	}
 			    	if (!s.contains("FP")) {
 			    		iterator.remove();
 			    		write = s.substring(s.indexOf(',') + 1)+",FP";
@@ -213,6 +258,9 @@ public class obrada {
 				
 				for(int i = 0;i < moduli1.size();i++){
 					if(s.contains(moduli1.get(i)) && !s.contains("@ATTRIBUTE")){
+						if(nacin == 'm') {
+				    		s = s.substring(0, s.lastIndexOf(','));
+				    	}
 						String write = s.substring(s.indexOf(',') + 1) + ",FP";
 						rez.add(write);
 				    	writer.println(write);
@@ -281,7 +329,7 @@ public class obrada {
 			report += "Broj NFP kandidata(nepromjenjeni moduli): " + jednaki_mod.size() + "\n";
 			
 			
-			Analiza.analiza();
+			Analiza.analiza(nacin);
 			
 			return report;
 		}
@@ -290,9 +338,10 @@ public class obrada {
 		}
 		
 		
-		
 		return null;
 	}
+	
+	
 	
 	
 }
