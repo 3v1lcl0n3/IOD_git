@@ -30,7 +30,9 @@ import java.util.Set;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JComboBox;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JRadioButton;
 
 public class GUI extends JFrame {
 
@@ -91,6 +93,26 @@ public class GUI extends JFrame {
 		contentPane.add(in1);
 		in1.setColumns(10);
 		
+
+		JRadioButton radioNacin1 = new JRadioButton("Na\u010Din 1");
+		radioNacin1.setSelected(true);
+		radioNacin1.setBounds(40, 133, 67, 23);
+		
+		JRadioButton radioNacin2 = new JRadioButton("Na\u010Din 2");
+		radioNacin2.setBounds(109, 133, 67, 23);
+		
+		JRadioButton radioNacin3 = new JRadioButton("Na\u010Din 3");
+		radioNacin3.setBounds(178, 133, 67, 23);
+		
+		ButtonGroup groupNacin = new ButtonGroup();
+		groupNacin.add(radioNacin1);
+		groupNacin.add(radioNacin2);
+		groupNacin.add(radioNacin3);
+		contentPane.add(radioNacin1);
+		contentPane.add(radioNacin2);
+		contentPane.add(radioNacin3);
+		
+		
 		JButton btnPretrazi1 = new JButton("Pretra\u017Ei...");
 		btnPretrazi1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -134,7 +156,7 @@ public class GUI extends JFrame {
 		JComboBox odabirAlgoritma = new JComboBox();
 		odabirAlgoritma.setModel(new DefaultComboBoxModel(new String[] {"NaiveBayes", "BayesNet"}));
 		odabirAlgoritma.setMaximumRowCount(2);
-		odabirAlgoritma.setBounds(300, 133, 109, 23);
+		odabirAlgoritma.setBounds(320, 133, 89, 23);
 		odabirAlgoritma.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				odabraniAlgoritam = odabirAlgoritma.getSelectedIndex();
@@ -143,7 +165,7 @@ public class GUI extends JFrame {
 		contentPane.add(odabirAlgoritma);
 		
 		JLabel lblAlgoritam = new JLabel("Algoritam:");
-		lblAlgoritam.setBounds(231, 139, 59, 14);
+		lblAlgoritam.setBounds(251, 137, 59, 14);
 		contentPane.add(lblAlgoritam);
 		
 		JButton btnProvjeri = new JButton("Provjeri");
@@ -204,7 +226,20 @@ public class GUI extends JFrame {
 					
 					//out.append(obrada.obradi(data1string, data2string));
 					//System.out.println(obrada.obradi(data1string, data2string));
-					String rezultat = obrada.obradi(file1, file2);
+					String rezultat;
+					if(radioNacin1.isSelected()) {
+						rezultat = obrada.obradi(file1, file2, 'n');
+					}
+					else if(radioNacin2.isSelected()) {
+						rezultat = obrada.obradi(file1, file2, 'm');
+					}
+					else if(radioNacin3.isSelected()){
+						rezultat = obrada.obradi(file1, file2, 'n');
+					}
+					else {
+						rezultat = obrada.obradi(file1, file2);
+					}
+					
 					out.append("\nAlgoritam: " + odabirAlgoritma.getModel().getSelectedItem().toString() + "\n");
 					out.append("\n" + rezultat);
 					ArrayList<String> dictionary = new ArrayList<String>();
@@ -232,7 +267,7 @@ public class GUI extends JFrame {
 				}
 			}
 		});
-		btnProvjeri.setBounds(40, 135, 89, 23);
+		btnProvjeri.setBounds(40, 163, 89, 23);
 		contentPane.add(btnProvjeri);
 		
 		out = new JTextArea();
@@ -288,9 +323,8 @@ public class GUI extends JFrame {
 		contentPane.add(labelExport);
 		
 		scrollPane = new JScrollPane(out);
-		scrollPane.setBounds(40, 170, 369, 285);
+		scrollPane.setBounds(40, 197, 369, 258);
 		contentPane.add(scrollPane);
-		
 		
 		
 	}
