@@ -15,7 +15,7 @@ import weka.filters.unsupervised.attribute.StringToWordVector;
 
 public class Analiza {
 
-	public static void analiza(){
+	public static void analiza(char nacin){
 		/*
 		Instances train = ;         // from somewhere
 		Instances test = ;       // from somewhere
@@ -71,7 +71,12 @@ public class Analiza {
         //testing data
         Instances test = null;
 		try {
-			test = new Instances(new BufferedReader(new FileReader("testni.arff")));
+			String src;
+			if(nacin == 'n') src = "testni1.arff";
+			else if(nacin == 'm') src = "testni2.arff";
+			else src = "testni1.arff";
+				
+			test = new Instances(new BufferedReader(new FileReader(src)));
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -113,7 +118,9 @@ public class Analiza {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            String className = train.attribute(49).value((int)index);
+			String className;
+			if(nacin == 'n') className = train.attribute(49).value((int)index);
+			else className = train.attribute(48).value((int)index);
           System.out.println(className);
             
         }
