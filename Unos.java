@@ -42,12 +42,14 @@ public class Unos {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Instances data = new Instances(reader);
+		
+		Instances data = null;
+		data = new Instances(reader);
 		reader.close();
 		// setting class attribute
 		data.setClassIndex(data.numAttributes() - 1);
+		System.out.print(data);
 		
-		//System.out.print(data);
 		return data;
 		
 	}
