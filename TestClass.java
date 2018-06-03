@@ -65,4 +65,40 @@ public class TestClass {
 		
 		assertEquals(ocekivani, obrada.obradi(file1, file2, 'm'));
 	}
+
+	@Test
+	public void test_Analiza_NaiveBayes_Nacin1() {
+		GUI.odabraniAlgoritam = 0;
+		File file1 = new File("R2_0test.arff");
+		File file2 = new File("R2_1test.arff");
+		obrada.obradi(file1, file2, 'n');
+		assertEquals("FPFPFPFPFPFPFPFPNFPFPFPNFP", Analiza.analiza('n'));
+	}
+	
+	@Test
+	public void test_Analiza_NaiveBayes_Nacin2() {
+		GUI.odabraniAlgoritam = 0;
+		File file1 = new File("R2_0test.arff");
+		File file2 = new File("R2_1test.arff");
+		obrada.obradi(file1, file2, 'm');
+		assertEquals("FPFPFPFPFPFPFPFPFPFPFPFP", Analiza.analiza('m'));
+	}
+	
+	@Test
+	public void test_Analiza_BayesNet_Nacin1() {
+		GUI.odabraniAlgoritam = 1;
+		File file1 = new File("R2_0test.arff");
+		File file2 = new File("R2_1test.arff");
+		obrada.obradi(file1, file2, 'n');
+		assertEquals("FPFPFPFPFPFPFPFPFPFPFPFP", Analiza.analiza('n'));
+	}
+	
+	@Test
+	public void test_Analiza_BayesNet_Nacin2() {
+		GUI.odabraniAlgoritam = 1;
+		File file1 = new File("R2_0test.arff");
+		File file2 = new File("R2_1test.arff");
+		obrada.obradi(file1, file2, 'm');
+		assertEquals("FPFPFPFPFPFPFPFPFPFPFPFP", Analiza.analiza('m'));
+	}
 }
