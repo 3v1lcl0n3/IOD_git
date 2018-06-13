@@ -10,6 +10,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.BayesNet;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
@@ -75,9 +76,10 @@ public class Analiza {
         Instances test = null;
 		try {
 			String src;
-			if(nacin == 'n') src = "testni1.arff";
+			src = "testnifinal.arff";
+			/*if(nacin == 'n') src = "testni1.arff";
 			else if(nacin == 'm') src = "testni2.arff";
-			else src = "testni1.arff";
+			else src = "testni1.arff";*/
 				
 			test = new Instances(new BufferedReader(new FileReader(src)));
 		} catch (FileNotFoundException e1) {
@@ -113,26 +115,38 @@ public class Analiza {
         
         String vrati = "";
         for(int i=0; i<test2.numInstances(); i++) {
-            //System.out.println(test.instance(i));
-            
+        	String className = "";
 			try {
-				
+				//System.out.println(test2.get(i));
 				index = algoritam.classifyInstance(test2.instance(i));
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String className;
-			if(nacin == 'n') className = train.attribute(49).value((int)index);
-			else className = train.attribute(48).value((int)index);
-          System.out.println(className);
-          vrati += className;
+			if(nacin == 'n' || nacin == 'm' || nacin == '3') className = train.attribute(48).value((int)index);
+			else className = train.attribute(49).value((int)index);
+			System.out.println(className);
         }
         
         //System.out.println("Pls dodi tu");
+        
+        Evaluation eTest;
+		try {
+			eTest = new Evaluation(train);
+			eTest.evaluateModel(algoritam, train);
+			vrati = eTest.toSummaryString();
+			System.out.println(vrati);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
+		
+	
+        
         return vrati;
         
     }
-		
-		
+
 }
