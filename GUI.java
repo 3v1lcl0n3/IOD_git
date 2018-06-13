@@ -95,13 +95,16 @@ public class GUI extends JFrame {
 		
 
 		JRadioButton radioNacin1 = new JRadioButton("Na\u010Din 1");
+		radioNacin1.setToolTipText("Uzima u obzir naj recent verzije svih modula");
 		radioNacin1.setSelected(true);
 		radioNacin1.setBounds(40, 133, 67, 23);
 		
 		JRadioButton radioNacin2 = new JRadioButton("Na\u010Din 2");
+		radioNacin2.setToolTipText("Eliminira one module koji su nepromijenjeni izme\u0111u verzija i imaju 0 bug count");
 		radioNacin2.setBounds(109, 133, 67, 23);
 		
 		JRadioButton radioNacin3 = new JRadioButton("Na\u010Din 3");
+		radioNacin3.setToolTipText("Bez \u010Di\u0161\u0107enja dataseta");
 		radioNacin3.setBounds(178, 133, 67, 23);
 		
 		ButtonGroup groupNacin = new ButtonGroup();
@@ -234,7 +237,7 @@ public class GUI extends JFrame {
 						rezultat = obrada.obradi(file1, file2, 'm');
 					}
 					else if(radioNacin3.isSelected()){
-						rezultat = obrada.obradi(file1, file2, 'n');
+						rezultat = obrada.obradi(file1, file2, '3');
 					}
 					else {
 						rezultat = obrada.obradi(file1, file2);
@@ -328,4 +331,5 @@ public class GUI extends JFrame {
 		
 		
 	}
+
 }
