@@ -17,18 +17,47 @@ import com.google.common.collect.Sets;
 
 public class obrada {
 
+	private static String removeBugCount(String s) {
+		s = s.substring(0, s.lastIndexOf(','));
+		return s;
+	}
+	
+	private static int findModul(String modul, HashSet<String> set) {
+		int ret = 0;
+		for(String s: set) {
+			if(modul.compareTo(s) == 0) {
+				ret = 1;
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	private static int findBugCount(String modul) {
+		String bugs = modul.substring(modul.lastIndexOf(',') + 1);
+		int cnt = -1;
+		try {
+			cnt = Integer.parseInt(bugs);
+		}
+		catch(NumberFormatException e) {
+			System.out.println("Greska kod nalazenja bug counta u '" + bugs + "'");
+		}
+		return cnt;
+	}
+	
 	private static HashSet<String> removeBuggy(HashSet<String> set) {
 		List<String> toRemove = new ArrayList<String>();
 		for(String s: set) {
 			if(s.lastIndexOf(',') != -1 && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA")) {
-				String bugs = s.substring(s.lastIndexOf(',') + 1);
+				/*String bugs = s.substring(s.lastIndexOf(',') + 1);
 				int bugova = 0;
 				try {
 					bugova = Integer.parseInt(bugs);
 				}
 				catch(NumberFormatException e) {
 					System.out.println("Greska kod nalazenja bug counta");
-				}
+				}*/
+				int bugova = findBugCount(s);
 				if(bugova > 0) {
 					toRemove.add(s);
 				}
@@ -103,6 +132,51 @@ public class obrada {
 				f1 = removeBuggy(f1);
 				f2 = removeBuggy(f2);
 			}
+			
+			int FP3 = 0, NFP3 = 0, nModula3 = 0;
+			ArrayList<String> nacin3_rez = new ArrayList<String>();
+			
+			String report = "";
+			
+			if(nacin == '3') {
+				for (String s: f1) {
+					if(s.lastIndexOf(',') != -1 && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA")) {
+						int bugova = findBugCount(s);
+						s = s.substring(s.indexOf(',') + 1);
+						if(bugova == 0) {
+							nacin3_rez.add(removeBugCount(s) + ",NFP");
+							NFP3++;
+						}
+						else if(bugova > 0){
+							nacin3_rez.add(removeBugCount(s) + ",FP");
+							FP3++;
+						}
+						else {
+						}
+						nModula3++;
+					}
+				}
+				
+				report = "Broj modula u datasetu: " + nModula3 + "\n\n";
+				report += "Broj FP kandidata: " + FP3 + "\n";
+				report += "Broj NFP kandidata: " + NFP3 + "\n";
+			}
+			int aaaaa = 0;
+			ArrayList<String> NFP_isti = new ArrayList<String>();
+			if(nacin == 'm') {
+				//način 2: dodaj sve koji su nepromijenjeni kao NFP
+				for (String s: f1) {
+					if(s.lastIndexOf(',') != -1 && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA")) {
+						System.out.println("Trazim " + s + " u f2");
+						if(findBugCount(s) == 0 && findModul(s, f2) == 1) {
+							//writer.println(s + ",NFP");
+							NFP_isti.add(removeBugCount(s) + ",NFP");
+							System.out.println("Dodan u izlaz: " + s + ",NFP");
+						}
+					}
+				}
+			}
+			
 			List<String> f1_s = FileUtils.readLines(file1);
 			List<String> f2_s = FileUtils.readLines(file2);
 			
@@ -127,10 +201,11 @@ public class obrada {
 			
 			int nKlasifikatora=1, nModula1=0, nModula2=0, nJednakih=0, nRazlicitih=0, nFP=0, nNFP=0;
 			
+
 			for(int i=0; i<f1_s.size(); i++) {
 				String s = f1_s.get(i);
 				boolean provjera = true;
-				if(nacin == 'm') {
+				if(nacin == 'm' || nacin == 'n' || nacin == '3') {
 					provjera = !s.contains("bug_cnt");
 				}
 				if(s.contains("@ATTRIBUTE") && provjera && !s.contains("module")) {
@@ -184,164 +259,224 @@ public class obrada {
 			writer.println("@DATA");
 			writer.println();
 			
-			List <String> tempmod2 = new ArrayList<String>();
-			tempmod2.addAll(moduli2);
-			List <String> tempmod1 = new ArrayList<String>();
-			tempmod1.addAll(moduli1);
-			tempmod2.removeAll(tempmod1);
-			System.out.println("Trebao bi bit jedan element:" + tempmod2);
-			
-			Set<String> rez = new HashSet<String>();
-			//nalazi module koje su promjenjene u drugoj verziji dataseta
-			for (Iterator<String> iterator = f3.iterator(); iterator.hasNext();) {
-			    String s =  iterator.next();
-			    if(!s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains(tempmod2.get(0))&& !s.contains(tempmod2.get(1))) {
-			    	String write;
-			    	if(nacin == 'm') {
-			    		s = s.substring(0, s.lastIndexOf(','));
-			    	}
-			    	if (!s.contains("FP")) {
-			    		iterator.remove();
-			    		write = s.substring(s.indexOf(',') + 1)+",FP";
-				    	rez.add(write);
-				    	writer.println(write);
-				    	nRazlicitih++;
-				    	
-			    	}
-			    	else {
-			    		write = s.substring(s.indexOf(',') + 1);
-			    		rez.add(write);
-				    	writer.println(write);
-			    	}
-			    }
+			if(nacin == '3') {
+				for(String s: nacin3_rez) {
+					writer.println(s);
+				}
+				writer.close();
 			}
-			
-			
-			//nalazi module koji nema vise u drugoj verziji
-			
-			/*for(int i = 0; i < moduli1.size();i++){
 				
-				for(int j = 0; j < moduli2.size();j++){
-					System.out.println("usporedujem " + moduli1.get(i) + " sa " + moduli2.get(j));
-					if(moduli1.get(i).equals(moduli2.get(j))){
-						System.out.println("isti su, brisem");
-						//moduli1.remove(i);
-						break;
+			if(nacin != '3') {
+				List <String> tempmod2 = new ArrayList<String>();
+				tempmod2.addAll(moduli2);
+				List <String> tempmod1 = new ArrayList<String>();
+				tempmod1.addAll(moduli1);
+				tempmod2.removeAll(tempmod1);
+				System.out.println("Trebao bi bit jedan element:" + tempmod2);
+				
+				if(nacin == 'm') {
+					for(String s : NFP_isti) {
+						//s = removeBugCount(s);
+						s = s.substring(s.indexOf(',') + 1);
+						System.out.println("pisem: " + s);
+						writer.println(s);
+					}
+				}
+				
+				List<String> rez = new ArrayList<String>();
+				//nalazi module koje su promjenjene u drugoj verziji dataseta
+				//System.out.println("a ne znam vise boze pomozi");
+				
+				for (Iterator<String> iterator = f3.iterator(); iterator.hasNext();) {
+				    String s =  iterator.next();
+				    if(!s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains(tempmod2.get(0))&& !s.contains(tempmod2.get(1))) {
+				    	if(nacin == 'm') {
+				    		int breakflag=1;
+				    		for(String s2 : f1) {
+				    			if(s2.contains(s.substring(0, s.indexOf(',')))) {
+				    				breakflag = 0;
+				    				System.out.println("Nađen " + s.substring(0, s.indexOf(',')) + " u f1");
+				    				break;
+				    			}
+				    		}
+				    		if(breakflag == 1) continue;
+				    	}
+				    	String write;
+				    	if(nacin == 'm' || nacin == 'n' || nacin == '3') {
+				    		System.out.print("Index1: " + s.lastIndexOf(',') + " ");
+				    		if(s.lastIndexOf(',') != -1) {
+				    			s = s.substring(0, s.lastIndexOf(','));
+				    		}
+				    	}
+				    	if (nacin != 'm' && !s.contains("FP")) {
+				    		iterator.remove();
+				    		System.out.print("Index2: " + (s.indexOf(',') + 1) + " ");
+				    		write = s.substring(s.indexOf(',') + 1)+",FP";
+				    		System.out.println("Dodajem u rez: " + write);
+					    	//rez.add(write);
+					    	writer.println(write);
+					    	nRazlicitih++;
+					    	nFP++;
+					    	
+				    	}
+				    	/*
+				    	else {
+				    		write = s.substring(s.indexOf(',') + 1);
+				    		rez.add(write);
+					    	writer.println(write);
+				    	}*/
+				    }
+				}
+				if(nacin == 'm') {
+					for(String s1 : f1) {
+						if(s1.contains("@ATTRIBUTE") || s1.contains("@RELATION") || s1.contains("@DATA") || s1.isEmpty()) continue;
+						for(String s2 : f2) {
+							if(s2.contains("@ATTRIBUTE") || s2.contains("@RELATION") || s2.contains("@DATA") || s2.isEmpty()) continue;
+		    				if((s1.substring(0, s1.indexOf(','))).equals((s2.substring(0, s2.indexOf(','))))) {
+		    					if(!s1.equals(s2)) {
+		    						nFP++;
+				    				//System.out.print(" indexznj: " + s1.indexOf(',') + " ");
+		    						s1 = s1.substring(s1.indexOf(',') + 1);
+		    						//System.out.println(s1);
+		    						String write = removeBugCount(s1) + ",FP";
+		    						writer.println(write);
+							    	nRazlicitih++;
+		    					}
+		    				}
+		    			}
+					}
+				}
+				
+				//nalazi module koji nema vise u drugoj verziji
+				
+				/*for(int i = 0; i < moduli1.size();i++){
+					
+					for(int j = 0; j < moduli2.size();j++){
+						System.out.println("usporedujem " + moduli1.get(i) + " sa " + moduli2.get(j));
+						if(moduli1.get(i).equals(moduli2.get(j))){
+							System.out.println("isti su, brisem");
+							//moduli1.remove(i);
+							break;
+							
+						}
 						
 					}
 					
 				}
-				
-			}
-			*/
-			List<String> moduli3 = new ArrayList<String>();
-			for(String s : moduli1) {
-				if(!moduli2.contains(s)) {
-					moduli3.add(s);
-				}
-			}
-			
-			
-			System.out.println();
-			System.out.println("elementi koji se ne podudaraju:");
-			System.out.println(moduli3);
-			
-			//nRazlicitih = moduli1.size();
-			moduli1.removeAll(moduli2);
-			//nJednakih = nRazlicitih - moduli1.size();
-			//nRazlicitih = moduli1.size();
-			
-			System.out.println("moduli1 nakon brisanja duplikata (trebalo bi ih biti dva):");
-			System.out.println(moduli1);
-			
-			for (String s: f1){
-				
-				for(int i = 0;i < moduli1.size();i++){
-					if(s.contains(moduli1.get(i)) && !s.contains("@ATTRIBUTE")){
-						if(nacin == 'm') {
-				    		s = s.substring(0, s.lastIndexOf(','));
-				    	}
-						String write = s.substring(s.indexOf(',') + 1) + ",FP";
-						rez.add(write);
-				    	writer.println(write);
-				    	nFP++;
+				*/
+				List<String> moduli3 = new ArrayList<String>();
+				for(String s : moduli1) {
+					if(!moduli2.contains(s)) {
+						moduli3.add(s);
 					}
 				}
+				
+				
+				System.out.println();
+				System.out.println("elementi koji se ne podudaraju:");
+				System.out.println(moduli3);
+				
+				//nRazlicitih = moduli1.size();
+				moduli1.removeAll(moduli2);
+				//nJednakih = nRazlicitih - moduli1.size();
+				//nRazlicitih = moduli1.size();
+				
+				System.out.println("moduli1 nakon brisanja duplikata (trebalo bi ih biti dva):");
+				System.out.println(moduli1);
+				
+				for (String s: f1){
+					
+					for(int i = 0;i < moduli1.size();i++){
+						if(s.contains(moduli1.get(i)) && !s.contains("@ATTRIBUTE")){
+							if(nacin == 'n' || nacin == '3') {
+								if(s.lastIndexOf(',') != -1) {
+									s = s.substring(0, s.lastIndexOf(','));
+								}
+					    		String write = s.substring(s.indexOf(',') + 1) + ",FP";
+					    		//rez.add(write);
+					    		writer.println(write);
+					    		nFP++;
+					    	}
+							
+						}
+					}
+				}
+				
+				System.out.println("Datoteke koje nisu promjenjene");
+				System.out.println(jednaki_mod);
+				
+				if(nacin != 'm') {
+					for(int i = 0; i < jednaki_mod.size();i++){
+						if(nacin == 'm' || nacin == 'n' || nacin == '3') {
+							jednaki_mod.set(i, jednaki_mod.get(i).substring(0, jednaki_mod.get(i).lastIndexOf(',')));
+			    		}
+						String write = jednaki_mod.get(i).substring(jednaki_mod.get(i).indexOf(',') + 1)+",NFP";
+						//rez.add(write);
+			    		writer.println(write);
+			    		nNFP++;
+					}
+				}
+				
+				writer.close();
+				
+				/*
+				for (Iterator<String> iterator = f1.iterator(); iterator.hasNext();) {
+				    String s =  iterator.next();
+				    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+				    	String temp = iterator.toString();
+				    	iterator.remove();
+				    	String[] parts = temp.split("\\,");
+				    	moduli1.add(parts[0]);
+				    	
+				    }   
+				    
+				}
+				*/
+				/*for (Iterator<String> iterator = f2.iterator(); iterator.hasNext();) {
+				    String s =  iterator.next();
+				    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
+				    	String temp = iterator.toString();
+				    	iterator.remove();
+				    	String[] parts = temp.split("\\,");
+				    	moduli2.add(parts[0]);
+				    	
+				    }   
+				    
+				}
+				*/
+				//System.out.println(moduli1);
+				//System.out.println("novi moduli");
+				//System.out.println(moduli2);
+				
+				System.out.println();
+				System.out.println("moduli koji su promijenjeni u drugoj verziji:");
+				
+				//for (String eachString : rez)
+				//{
+				    //System.out.println(eachString);
+				//}
+				
+				report = "Broj modula u prvom datasetu: " + nModula1 + "\n";
+				report += "Broj modula u drugom datasetu: " + nModula2 + "\n";
+				report += "Broj promjenjenih modula: " + nRazlicitih + "\n";
+				report += "Broj nepromijenjenih modula: " + jednaki_mod.size() + "\n";
+				report += "Broj modula koji su maknuti u novoj verziji: " + moduli1.size() + "\n\n";
+				int FP_cand = nRazlicitih + moduli1.size();
+				report += "Broj FP kandidata(promjenjeni + maknuti): " + nFP + "\n";
+				report += "Broj NFP kandidata(nepromjenjeni moduli): " + jednaki_mod.size() + "\n";
 			}
-			
-			System.out.println("Datoteke koje nisu promjenjene");
-			System.out.println(jednaki_mod);
-			
-			
-			for(int i = 0; i < jednaki_mod.size();i++){
-				String write = jednaki_mod.get(i).substring(jednaki_mod.get(i).indexOf(',') + 1)+",NFP";
-				rez.add(write);
-		    	writer.println(write);
-		    	nNFP++;
-			}
-			
-			writer.close();
-			
-			/*
-			for (Iterator<String> iterator = f1.iterator(); iterator.hasNext();) {
-			    String s =  iterator.next();
-			    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
-			    	String temp = iterator.toString();
-			    	iterator.remove();
-			    	String[] parts = temp.split("\\,");
-			    	moduli1.add(parts[0]);
-			    	
-			    }   
-			    
-			}
-			*/
-			/*for (Iterator<String> iterator = f2.iterator(); iterator.hasNext();) {
-			    String s =  iterator.next();
-			    if (!s.contains("FP") && !s.contains("@RELATION") && !s.contains("@ATTRIBUTE") && !s.contains("@DATA") ){
-			    	String temp = iterator.toString();
-			    	iterator.remove();
-			    	String[] parts = temp.split("\\,");
-			    	moduli2.add(parts[0]);
-			    	
-			    }   
-			    
-			}
-			*/
-			//System.out.println(moduli1);
-			//System.out.println("novi moduli");
-			//System.out.println(moduli2);
-			
-			System.out.println();
-			System.out.println("moduli koji su promijenjeni u drugoj verziji:");
-			
-			for (String eachString : rez)
-			{
-			    System.out.println(eachString);
-			}
-			
-			String report = "Broj modula u prvom datasetu: " + nModula1 + "\n";
-			report += "Broj modula u drugom datasetu: " + nModula2 + "\n";
-			report += "Broj promjenjenih modula: " + nRazlicitih + "\n";
-			report += "Broj nepromijenjenih modula: " + jednaki_mod.size() + "\n";
-			report += "Broj modula koji su maknuti u novoj verziji: " + moduli1.size() + "\n\n";
-			int FP_cand = nRazlicitih + moduli1.size();
-			report += "Broj FP kandidata(promjenjeni + maknuti): " + FP_cand + "\n";
-			report += "Broj NFP kandidata(nepromjenjeni moduli): " + jednaki_mod.size() + "\n";
-			
+
+				
 			
 			Analiza.analiza(nacin);
-			
 			return report;
 		}
 		catch (Exception e) {
-			System.out.println("a ne znam");
+			System.out.println(e);
 		}
 		
 		
 		return null;
 	}
-	
-	
-	
-	
+
 }
