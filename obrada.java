@@ -114,6 +114,14 @@ public class obrada {
 	}
 	
 	
+	public static String obradi(File file) {
+		return obradi(file, file, '3');
+	}
+	
+	public static String obradi(File file, char nacin) {
+		return obradi(file, file, nacin);
+	}
+	
 	public static String obradi(File file1, File file2) {
 		return obradi(file1, file2, 'n');
 	}
