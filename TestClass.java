@@ -166,7 +166,7 @@ public class TestClass {
 		File file = new File("R2_0test.arff");
 		obrada.obradi(file, '3');
 		String ocekivani =  "\n" +
-				"aCorrectly Classified Instances           9               90      %\n" +
+				"Correctly Classified Instances           9               90      %\n" +
 				"Incorrectly Classified Instances         1               10      %\n" +
 				"Kappa statistic                          0.8   \n" + 
 				"Mean absolute error                      0.1   \n" +
