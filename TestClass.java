@@ -60,8 +60,7 @@ public class TestClass {
 	@Test
 	public void test_Obrada_Nacin3() {
 		GUI.odabraniAlgoritam = 0;
-		File file1 = new File("R2_0test.arff");
-		File file2 = new File("R2_1test.arff");
+		File file = new File("R2_0test.arff");
 		String ocekivani =
 				"Broj modula u datasetu: 10\n" + 
 				"\n" + 
@@ -69,7 +68,7 @@ public class TestClass {
 				"Broj NFP kandidata: 5\n" + 
 				"";
 		
-		assertEquals(ocekivani, obrada.obradi(file1, file2, '3'));
+		assertEquals(ocekivani, obrada.obradi(file, '3'));
 	}
 	
 	@Test
@@ -111,9 +110,8 @@ public class TestClass {
 	@Test
 	public void test_Analiza_NaiveBayes_Nacin3() {
 		GUI.odabraniAlgoritam = 0;
-		File file1 = new File("R2_0test.arff");
-		File file2 = new File("R2_1test.arff");
-		obrada.obradi(file1, file2, '3');
+		File file = new File("R2_0test.arff");
+		obrada.obradi(file, '3');
 		String ocekivani =  "\n" +
 				"Correctly Classified Instances           9               90      %\n" +
 				"Incorrectly Classified Instances         1               10      %\n" +
@@ -165,11 +163,10 @@ public class TestClass {
 	@Test
 	public void test_Analiza_BayesNet_Nacin3() {
 		GUI.odabraniAlgoritam = 0;
-		File file1 = new File("R2_0test.arff");
-		File file2 = new File("R2_1test.arff");
-		obrada.obradi(file1, file2, '3');
+		File file = new File("R2_0test.arff");
+		obrada.obradi(file, '3');
 		String ocekivani =  "\n" +
-				"Correctly Classified Instances           9               90      %\n" +
+				"aCorrectly Classified Instances           9               90      %\n" +
 				"Incorrectly Classified Instances         1               10      %\n" +
 				"Kappa statistic                          0.8   \n" + 
 				"Mean absolute error                      0.1   \n" +
@@ -179,5 +176,4 @@ public class TestClass {
 				"Total Number of Instances               10     \n";
 		assertEquals(ocekivani, Analiza.analiza('3'));
 	}
-
 }
